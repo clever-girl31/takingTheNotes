@@ -44,7 +44,8 @@ app.post('/notes', (req, res) => {
       status: 'success',
       body: newNote,
     };
-    res.json(response);
+    res.json(response)
+    console.info(`New note #${id} generated`);
   } else {
     console.error(err)
     res.json('Error posting new note.')
