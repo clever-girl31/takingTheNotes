@@ -25,7 +25,7 @@ app.get('*', (req, res) =>
 );
 
 
-const { readAndAppend } = require('./helpers/fsUtils.js')
+const { readAndAppend, readFromFile, writeToFile } = require('./helpers/fsUtils.js')
 
 app.post('/notes', (req, res) => {
   const { title, text } = req.body;
@@ -50,6 +50,17 @@ app.post('/notes', (req, res) => {
     res.json('Error posting new note.')
   }
 });
+
+app.delete('/api/notes/:id', (req, res) => {
+  const id = req.params.id;
+  readFromFile('./db/db.json')
+    .then((data) => JSON.parse(data))
+    .then((json) => {
+      const result = json.filter((activeNote) => activeNote.id != id);
+      writeToFile('./db/db.json', result);
+      res.json(`Note #${id} removed.`)
+    })
+})
 
 app.listen(PORT, () =>
   console.log(`App listening at localhost:${PORT}`)
