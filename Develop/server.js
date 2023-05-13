@@ -27,7 +27,7 @@ app.get('*', (req, res) =>
 
 const { readAndAppend } = require('./helpers/fsUtils.js')
 
-app.post('api/notes', (req, res) => {
+app.post('/notes', (req, res) => {
   const { title, text } = req.body;
   const id = generateUniqueId({
     length: 3,
