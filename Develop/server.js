@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const generateUniqueId = require('generate-unique-id')
 // const api = require('./routes/index.js');
 
 const PORT = process.env.PORT || 3001;
@@ -15,22 +16,28 @@ app.use(express.static('public'));
 app.get('/notes', (req, res) =>
   res.sendFile(path.join(__dirname, '/public/notes.html'))
 );
-app.get('*', (req, res) =>
-  res.sendFile(path.join(__dirname, '/public/index.html'))
-);
-
 app.get('/api/notes', (req, res) =>
   res.sendFile(path.join(__dirname, './db/db.json'))
 );
 
+app.get('*', (req, res) =>
+  res.sendFile(path.join(__dirname, '/public/index.html'))
+);
+
+
 const { readAndAppend } = require('./helpers/fsUtils.js')
 
-app.post('/notes', (req, res) => {
+app.post('api/notes', (req, res) => {
   const { title, text } = req.body;
+  const id = generateUniqueId({
+    length: 3,
+    useLetters: false
+  })
   if (title && text) {
     const newNote = {
       title,
-      text
+      text,
+      id
     };
     readAndAppend(newNote, './db/db.json');
     const response = {
